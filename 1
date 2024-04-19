@@ -4,14 +4,14 @@ local clickDelay = 0.1 -- Adjust this value as needed (in seconds)
 local themeColor = Color3.new(0, 0, 0) -- Default theme color (black)
 local guiMinimized = false -- Flag to track whether the GUI is minimized
 
-
 local gui = Instance.new("ScreenGui")
 gui.Parent = game.Players.LocalPlayer.PlayerGui
+gui.IgnoreGuiInset = true -- Allows the GUI to cover the entire screen
 
 
 local mainFrame = Instance.new("Frame")
-mainFrame.Size = UDim2.new(0, 200, 0, 100)
-mainFrame.Position = UDim2.new(0, 10, 0, 10)
+mainFrame.Size = UDim2.new(0, 2560, 0, 1440) -- Size set to 2560x1440
+mainFrame.Position = UDim2.new(0, 0, 0, 0)
 mainFrame.BackgroundColor3 = Color3.new(0, 0, 0)
 mainFrame.BorderSizePixel = 0
 mainFrame.Visible = not guiMinimized
@@ -53,15 +53,15 @@ madeByLabel.Parent = mainFrame
 
 local autoClickerButton = Instance.new("TextButton")
 autoClickerButton.Text = "AutoClicker"
-autoClickerButton.Size = UDim2.new(0, 100, 0, 30)
+autoClickerButton.Size = UDim2.new(0, 200, 0, 60)
 autoClickerButton.Position = UDim2.new(0, 10, 0, 30)
 autoClickerButton.Parent = mainFrame
 
 
 local themesButton = Instance.new("TextButton")
 themesButton.Text = "Themes"
-themesButton.Size = UDim2.new(0, 100, 0, 30)
-themesButton.Position = UDim2.new(0, 10, 0, 70)
+themesButton.Size = UDim2.new(0, 200, 0, 60)
+themesButton.Position = UDim2.new(0, 10, 0, 100)
 themesButton.Parent = mainFrame
 
 
@@ -72,11 +72,16 @@ minimizeButton.Position = UDim2.new(1, -30, 0, 0)
 minimizeButton.Parent = mainFrame
 
 
+local function tap(x, y)
+    -- Simulate a tap at screen coordinates (x, y)
+    -- Replace this with the appropriate code to simulate taps
+end
+
+
 local function toggleAutoClicker()
     autoClickerEnabled = not autoClickerEnabled
     while autoClickerEnabled do
-        -- Perform auto-clicking
-        -- Replace this with your auto-clicking logic
+        tap(100, 100) -- Example tap coordinates (adjust as needed)
         wait(clickDelay)
     end
 end
