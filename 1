@@ -1,0 +1,27 @@
+local autoClickerEnabled = false
+local clickDelay = 0.1 -- Adjust this value as needed (in seconds)
+
+local function click()
+    mouse1click()
+end
+
+local function toggleAutoClicker()
+    autoClickerEnabled = not autoClickerEnabled
+    if autoClickerEnabled then
+        while autoClickerEnabled do
+            click()
+            wait(clickDelay)
+        end
+    end
+end
+
+local gui = Instance.new("ScreenGui")
+gui.Parent = game.Players.LocalPlayer.PlayerGui
+
+local button = Instance.new("TextButton")
+button.Text = "AutoClicker"
+button.Size = UDim2.new(0, 100, 0, 50)
+button.Position = UDim2.new(0, 10, 0, 10)
+button.Parent = gui
+
+button.MouseButton1Click:Connect(toggleAutoClicker)
