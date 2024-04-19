@@ -24,32 +24,46 @@ local ESPtoggle = SideTab:AddToggle({
     end
 })
 
+local Players = game:GetService("Players"):GetChildren()
 local RunService = game:GetService("RunService")
-local Players = game:GetService("Players")
-local Drawing = game:GetService("Drawing")
+local highlight = Instance.new("Highlight")
+highlight.Name = "Highlight"
 
--- Function to draw ESP
-local function drawESP()
-    for _, player in ipairs(Players:GetPlayers()) do
-        if player ~= Players.LocalPlayer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
-            local rootPart = player.Character.HumanoidRootPart
-            local position, onScreen = workspace.CurrentCamera:WorldToViewportPoint(rootPart.Position)
-            if onScreen and ESPEnabled then
-                local nameTag = Drawing.new("Text")
-                nameTag.Text = player.Name
-                nameTag.Position = Vector2.new(position.X, position.Y - 20) -- Adjust position slightly above the head
-                nameTag.Size = 20
-                nameTag.Color = Color3.fromRGB(255, 0, 0)
-                nameTag.Visible = true
-                nameTag.Outline = true
-                nameTag.Center = true
-                nameTag.Font = Drawing.Fonts.Plex
-                nameTag.Visible = true
-                nameTag.Transparency = 0.5
-                nameTag.ZIndex = 2
-            end
+-- Function to highlight players
+local function highlightPlayers()
+    for i, player in pairs(Players) do
+        repeat wait() until player.Character
+        if not player.Character:FindFirstChild("HumanoidRootPart"):FindFirstChild("Highlight") then
+            local highlightClone = highlight:Clone()
+            highlightClone.Adornee = player.Character:FindFirstChild("HumanoidRootPart")
+            highlightClone.Parent = player.Character:FindFirstChild("HumanoidRootPart")
+            highlightClone.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+            highlightClone.Name = "Highlight"
         end
     end
 end
 
-RunService.RenderStepped:Connect(drawESP)
+-- Highlight existing players and listen for new ones
+for i, player in pairs(Players) do
+    player.CharacterAdded:Connect(function(character)
+        repeat wait() until character:FindFirstChild("HumanoidRootPart")
+        if not character:FindFirstChild("HumanoidRootPart"):FindFirstChild("Highlight") then
+            local highlightClone = highlight:Clone()
+            highlightClone.Adornee = character:FindFirstChild("HumanoidRootPart")
+            highlightClone.Parent = character:FindFirstChild("HumanoidRootPart")
+            highlightClone.Name = "Highlight"
+        end
+    end)
+end
+
+-- Listen for players leaving
+game.Players.PlayerRemoving:Connect(function(playerRemoved)
+    playerRemoved.Character:FindFirstChild("HumanoidRootPart").Highlight:Destroy()
+end)
+
+-- Continuously highlight players
+RunService.Heartbeat:Connect(function()
+    if ESPEnabled then
+        highlightPlayers()
+    end
+end)
