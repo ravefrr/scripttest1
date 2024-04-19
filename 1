@@ -1,63 +1,104 @@
 
 local autoClickerEnabled = false
 local clickDelay = 0.1 -- Adjust this value as needed (in seconds)
-local maxClicks = 30
-local clicksRemaining = 0
-
-
-local function tap()
-    -- Simulate a tap (modify this according to your game's input handling)
-    print("Tap!")
-end
-
-
-local function toggleAutoClicker()
-    autoClickerEnabled = not autoClickerEnabled
-    if autoClickerEnabled then
-        clicksRemaining = maxClicks
-        while autoClickerEnabled and clicksRemaining > 0 do
-            tap()
-            clicksRemaining = clicksRemaining - 1
-            wait(clickDelay)
-        end
-    end
-end
+local themeColor = Color3.new(0, 0, 0) -- Default theme color (black)
+local guiMinimized = false -- Flag to track whether the GUI is minimized
 
 
 local gui = Instance.new("ScreenGui")
 gui.Parent = game.Players.LocalPlayer.PlayerGui
 
 
-local label = Instance.new("TextLabel")
-label.Text = "Made by Rave"
-label.Size = UDim2.new(0, 200, 0, 20)
-label.Position = UDim2.new(0, 10, 0, 0)
-label.BackgroundTransparency = 1
-label.TextColor3 = Color3.new(1, 1, 1) -- White text color
-label.TextSize = 16
-label.Parent = gui
+local mainFrame = Instance.new("Frame")
+mainFrame.Size = UDim2.new(0, 200, 0, 100)
+mainFrame.Position = UDim2.new(0, 10, 0, 10)
+mainFrame.BackgroundColor3 = Color3.new(0, 0, 0)
+mainFrame.BorderSizePixel = 0
+mainFrame.Visible = not guiMinimized
+mainFrame.Active = true
+mainFrame.Parent = gui
 
 
-local button = Instance.new("TextButton")
-button.Text = "AutoClicker"
-button.Size = UDim2.new(0, 200, 0, 100) -- Larger size for touch
-button.Position = UDim2.new(0, 10, 0, 30)
-button.Parent = gui
+local dragging = false
+local dragStart = nil
+
+mainFrame.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging = true
+        dragStart = input.Position - mainFrame.Position
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then
+                dragging = false
+            end
+        end)
+    end
+end)
+
+mainFrame.InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseMovement and dragging then
+        mainFrame.Position = UDim2.new(0, input.Position.X - dragStart.X, 0, input.Position.Y - dragStart.Y)
+    end
+end)
 
 
-local function updateButtonColor()
-    if autoClickerEnabled then
-        button.BackgroundColor3 = Color3.new(0, 1, 0) -- Green when enabled
-    else
-        button.BackgroundColor3 = Color3.new(1, 0, 0) -- Red when disabled
+local madeByLabel = Instance.new("TextLabel")
+madeByLabel.Text = "Made by Rave"
+madeByLabel.Size = UDim2.new(0, 200, 0, 20)
+madeByLabel.Position = UDim2.new(0, 10, 0, 0)
+madeByLabel.BackgroundTransparency = 1
+madeByLabel.TextColor3 = Color3.new(1, 1, 1)
+madeByLabel.TextSize = 16
+madeByLabel.Parent = mainFrame
+
+
+local autoClickerButton = Instance.new("TextButton")
+autoClickerButton.Text = "AutoClicker"
+autoClickerButton.Size = UDim2.new(0, 100, 0, 30)
+autoClickerButton.Position = UDim2.new(0, 10, 0, 30)
+autoClickerButton.Parent = mainFrame
+
+
+local themesButton = Instance.new("TextButton")
+themesButton.Text = "Themes"
+themesButton.Size = UDim2.new(0, 100, 0, 30)
+themesButton.Position = UDim2.new(0, 10, 0, 70)
+themesButton.Parent = mainFrame
+
+
+local minimizeButton = Instance.new("TextButton")
+minimizeButton.Text = "-"
+minimizeButton.Size = UDim2.new(0, 20, 0, 20)
+minimizeButton.Position = UDim2.new(1, -30, 0, 0)
+minimizeButton.Parent = mainFrame
+
+
+local function toggleAutoClicker()
+    autoClickerEnabled = not autoClickerEnabled
+    while autoClickerEnabled do
+        -- Perform auto-clicking
+        -- Replace this with your auto-clicking logic
+        wait(clickDelay)
     end
 end
 
 
-button.MouseButton1Click:Connect(function()
-    toggleAutoClicker()
-    updateButtonColor()
-end)
+local function toggleTheme()
+    if themeColor == Color3.new(0, 0, 0) then
+        themeColor = Color3.new(1, 1, 1) -- White theme
+        mainFrame.BackgroundColor3 = themeColor
+    else
+        themeColor = Color3.new(0, 0, 0) -- Black theme
+        mainFrame.BackgroundColor3 = themeColor
+    end
+end
 
 
-updateButtonColor()
+local function toggleMinimize()
+    guiMinimized = not guiMinimized
+    mainFrame.Visible = not guiMinimized
+end
+
+
+autoClickerButton.MouseButton1Click:Connect(toggleAutoClicker)
+themesButton.MouseButton1Click:Connect(toggleTheme)
+minimizeButton.MouseButton1Click:Connect(toggleMinimize)
