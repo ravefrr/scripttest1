@@ -1,22 +1,31 @@
+
 local autoClickerEnabled = false
 local clickDelay = 0.1 -- Adjust this value as needed (in seconds)
+local maxClicks = 30
+local clicksRemaining = 0
+
 
 local function click()
     mouse1click()
 end
 
+
 local function toggleAutoClicker()
     autoClickerEnabled = not autoClickerEnabled
     if autoClickerEnabled then
-        while autoClickerEnabled do
+        clicksRemaining = maxClicks
+        while autoClickerEnabled and clicksRemaining > 0 do
             click()
+            clicksRemaining = clicksRemaining - 1
             wait(clickDelay)
         end
     end
 end
 
+
 local gui = Instance.new("ScreenGui")
 gui.Parent = game.Players.LocalPlayer.PlayerGui
+
 
 local label = Instance.new("TextLabel")
 label.Text = "Made by Rave"
@@ -27,10 +36,27 @@ label.TextColor3 = Color3.new(1, 1, 1) -- White text color
 label.TextSize = 16
 label.Parent = gui
 
+
 local button = Instance.new("TextButton")
 button.Text = "AutoClicker"
 button.Size = UDim2.new(0, 100, 0, 50)
 button.Position = UDim2.new(0, 10, 0, 30)
 button.Parent = gui
 
-button.MouseButton1Click:Connect(toggleAutoClicker)
+
+local function updateButtonColor()
+    if autoClickerEnabled then
+        button.BackgroundColor3 = Color3.new(0, 1, 0) -- Green when enabled
+    else
+        button.BackgroundColor3 = Color3.new(1, 0, 0) -- Red when disabled
+    end
+end
+
+
+button.MouseButton1Click:Connect(function()
+    toggleAutoClicker()
+    updateButtonColor()
+end)
+
+
+updateButtonColor()
