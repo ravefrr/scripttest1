@@ -5,8 +5,9 @@ local maxClicks = 30
 local clicksRemaining = 0
 
 
-local function click()
-    mouse1click()
+local function tap()
+    -- Simulate a tap (modify this according to your game's input handling)
+    print("Tap!")
 end
 
 
@@ -15,7 +16,7 @@ local function toggleAutoClicker()
     if autoClickerEnabled then
         clicksRemaining = maxClicks
         while autoClickerEnabled and clicksRemaining > 0 do
-            click()
+            tap()
             clicksRemaining = clicksRemaining - 1
             wait(clickDelay)
         end
@@ -39,7 +40,7 @@ label.Parent = gui
 
 local button = Instance.new("TextButton")
 button.Text = "AutoClicker"
-button.Size = UDim2.new(0, 100, 0, 50)
+button.Size = UDim2.new(0, 200, 0, 100) -- Larger size for touch
 button.Position = UDim2.new(0, 10, 0, 30)
 button.Parent = gui
 
