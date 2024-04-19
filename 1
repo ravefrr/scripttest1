@@ -1,14 +1,55 @@
 local lib = loadstring(game:HttpGet("https://raw.githubusercontent.com/REDzHUB/RedzLibV4/main/Source.lua"))()
 
-local Window = redzlib:MakeWindow({
-  Title = "Tw and Rave Dh : V1",
-  SubTitle = "by : TWRAVE",
-  LoadText = "TwRaveHub",
-  Flags = "TwRave Hub | Example.lua"
+local Window = lib:MakeWindow({
+    Title = "Tw and Rave Dh : V1",
+    SubTitle = "by : TWRAVE",
+    LoadText = "TwRaveHub",
+    Flags = "TwRave Hub | Example.lua"
 })
 
 -- MAIN PAGE
-local Tab = Window:MakeTab({Name = "Main", Icon = "Home"})
+local MainTab = Window:MakeTab({Name = "Main", Icon = "Home"})
+local MainSection = MainTab:AddSection({"Main Section"})
 
---[[ Hier machst du deine Tabs, Achte immer auf die tab name
--- weil jede neue tab Muss Z.b = ("Tab Name" also Main )
+-- ESP toggle
+local ESPEnabled = false
+
+local SideTab = Window:MakeTab({Name = "Side", Icon = "Home"})
+local SideSection = SideTab:AddSection({"Side Section"})
+local ESPtoggle = SideTab:AddToggle({
+    Name = "ESP Toggle",
+    Default = false,
+    Callback = function(Value)
+        ESPEnabled = Value
+    end
+})
+
+local RunService = game:GetService("RunService")
+local Players = game:GetService("Players")
+local Drawing = game:GetService("Drawing")
+
+-- Function to draw ESP
+local function drawESP()
+    for _, player in ipairs(Players:GetPlayers()) do
+        if player ~= Players.LocalPlayer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+            local rootPart = player.Character.HumanoidRootPart
+            local position, onScreen = workspace.CurrentCamera:WorldToViewportPoint(rootPart.Position)
+            if onScreen and ESPEnabled then
+                local nameTag = Drawing.new("Text")
+                nameTag.Text = player.Name
+                nameTag.Position = Vector2.new(position.X, position.Y - 20) -- Adjust position slightly above the head
+                nameTag.Size = 20
+                nameTag.Color = Color3.fromRGB(255, 0, 0)
+                nameTag.Visible = true
+                nameTag.Outline = true
+                nameTag.Center = true
+                nameTag.Font = Drawing.Fonts.Plex
+                nameTag.Visible = true
+                nameTag.Transparency = 0.5
+                nameTag.ZIndex = 2
+            end
+        end
+    end
+end
+
+RunService.RenderStepped:Connect(drawESP)
