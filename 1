@@ -1,111 +1,14 @@
--- Define variables
-local autoClickerEnabled = false
-local clickDelay = 0.1 -- Adjust this value as needed (in seconds)
-local themeColor = Color3.new(0, 0, 0) -- Default theme color (black)
-local guiMinimized = false -- Flag to track whether the GUI is minimized
+local lib = loadstring(game:HttpGet("https://raw.githubusercontent.com/REDzHUB/RedzLibV4/main/Source.lua"))()
 
--- Create GUI
-local gui = Instance.new("ScreenGui")
-gui.Parent = game.Players.LocalPlayer.PlayerGui
-gui.IgnoreGuiInset = true -- Allows the GUI to cover the entire screen
+local Window = redzlib:MakeWindow({
+  Title = "Tw and Rave Dh : V1",
+  SubTitle = "by : TWRAVE",
+  LoadText = "TwRaveHub",
+  Flags = "TwRave Hub | Example.lua"
+})
 
--- Main frame
-local mainFrame = Instance.new("Frame")
-mainFrame.Size = UDim2.new(0, 2560, 0, 1440) -- Size set to 2560x1440
-mainFrame.Position = UDim2.new(0, 0, 0, 0)
-mainFrame.BackgroundColor3 = Color3.new(0, 0, 0)
-mainFrame.BorderSizePixel = 0
-mainFrame.Visible = not guiMinimized
-mainFrame.Active = true
-mainFrame.Parent = gui
+-- MAIN PAGE
+local Tab = Window:MakeTab({Name = "Main", Icon = "Home"})
 
--- Dragging functionality (for moving the GUI)
-local dragging = false
-local dragStart = nil
-
-mainFrame.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 then
-        dragging = true
-        dragStart = input.Position - mainFrame.Position
-        input.Changed:Connect(function()
-            if input.UserInputState == Enum.UserInputState.End then
-                dragging = false
-            end
-        end)
-    end
-end)
-
-mainFrame.InputChanged:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseMovement and dragging then
-        mainFrame.Position = UDim2.new(0, input.Position.X - dragStart.X, 0, input.Position.Y - dragStart.Y)
-    end
-end)
-
--- "Made by Rave" label
-local madeByLabel = Instance.new("TextLabel")
-madeByLabel.Text = "Made by Rave"
-madeByLabel.Size = UDim2.new(0, 200, 0, 20)
-madeByLabel.Position = UDim2.new(0, 10, 0, 0)
-madeByLabel.BackgroundTransparency = 1
-madeByLabel.TextColor3 = Color3.new(1, 1, 1)
-madeByLabel.TextSize = 16
-madeByLabel.Parent = mainFrame
-
--- AutoClicker button
-local autoClickerButton = Instance.new("TextButton")
-autoClickerButton.Text = "AutoClicker"
-autoClickerButton.Size = UDim2.new(0, 200, 0, 60)
-autoClickerButton.Position = UDim2.new(0, 10, 0, 30)
-autoClickerButton.Parent = mainFrame
-
--- Themes button
-local themesButton = Instance.new("TextButton")
-themesButton.Text = "Themes"
-themesButton.Size = UDim2.new(0, 200, 0, 60)
-themesButton.Position = UDim2.new(0, 10, 0, 100)
-themesButton.Parent = mainFrame
-
--- Minimize button
-local minimizeButton = Instance.new("TextButton")
-minimizeButton.Text = "-"
-minimizeButton.Size = UDim2.new(0, 20, 0, 20)
-minimizeButton.Position = UDim2.new(1, -30, 0, 0)
-minimizeButton.Parent = mainFrame
-
--- Function to simulate a tap
-local function tap(x, y)
-    -- Simulate a tap at screen coordinates (x, y)
-    -- Replace this with the appropriate code to simulate taps
-    -- Example: input.tap(x, y)
-end
-
--- Function to toggle auto-clicker on/off
-local function toggleAutoClicker()
-    autoClickerEnabled = not autoClickerEnabled
-    while autoClickerEnabled do
-        tap(100, 100) -- Example tap coordinates (adjust as needed)
-        wait(clickDelay)
-    end
-end
-
--- Function to toggle themes
-local function toggleTheme()
-    if themeColor == Color3.new(0, 0, 0) then
-        themeColor = Color3.new(1, 1, 1) -- White theme
-        mainFrame.BackgroundColor3 = themeColor
-    else
-        themeColor = Color3.new(0, 0, 0) -- Black theme
-        mainFrame.BackgroundColor3 = themeColor
-    end
-end
-
--- Function to minimize/maximize the GUI
-local function toggleMinimize()
-    guiMinimized = not guiMinimized
-    mainFrame.Visible = not guiMinimized
-end
-
--- Connect button click events
-autoClickerButton.MouseButton1Click:Connect(toggleAutoClicker)
-themesButton.MouseButton1Click:Connect(toggleTheme)
-minimizeButton.MouseButton1Click:Connect(toggleMinimize)
+--[[ Hier machst du deine Tabs, Achte immer auf die tab name
+-- weil jede neue tab Muss Z.b = ("Tab Name" also Main )
